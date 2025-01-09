@@ -3,6 +3,7 @@ import { useStorageState } from "../hooks/useStorageState";
 import * as Location from "expo-location";
 export type UserContextType = {
   isLoggedIn: boolean;
+  searchDistanceKm: number;
   location?: { lat: number; lng: number };
 };
 
@@ -29,6 +30,7 @@ export default function GlobalProvider({ children }: any) {
     coords: { latitude: 0, longitude: 0 },
   } as Location.LocationObject);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [searchDistanceKm, setSearchDistanceKm] = useState<number>(20);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   useEffect(() => {
     async function getCurrentLocation() {
@@ -49,6 +51,7 @@ export default function GlobalProvider({ children }: any) {
     <GlobalContext.Provider
       value={{
         isLoggedIn,
+        searchDistanceKm,
         location: {
           lat: location?.coords.latitude,
           lng: location?.coords.longitude,

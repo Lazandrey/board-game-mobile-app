@@ -1,64 +1,37 @@
 import {
-  Image,
-  StyleSheet,
-  Platform,
   View,
   Text,
   FlatList,
+  StyleSheet,
   RefreshControl,
+  Image,
 } from "react-native";
-
-import { HelloWave } from "@/components/HelloWave";
-import ParallaxScrollView from "@/components/ParallaxScrollView";
-import ThemedText from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useColorScheme } from "react-native";
-import { useEffect, useState } from "react";
-import * as Location from "expo-location";
 import { useGlobalContext } from "@/context/GlobalProvider";
 import { useFetch } from "@/hooks/useFetch";
-import { GetEvents } from "@/utils/fetches";
-import {
-  EventRegisterType,
-  GetEventsType,
-  GetEventType,
-  GetGamesType,
-  GetGameType,
-  IsUserRegisteredType,
-  SaveEventType,
-  UpdateEventType,
-  EventType,
-  GameType,
-} from "@/types/game.types";
+import { GetEvents, GetGames } from "@/utils/fetches";
 import EventCard from "@/components/EventCard";
-import { useTheme } from "@react-navigation/native";
+import GameCard from "@/components/GameCard";
 
-export default function HomeScreen() {
+const games = () => {
+  const [refreshing, setRefreshing] = useState(false);
+  const [page, setPage] = useState(1);
+  const [onPage, setOnPage] = useState(30);
   const GlobalContex = useGlobalContext();
-  //
   const { data, loading, refetch } = useFetch(() =>
-    GetEvents({
-      gameTitle: "",
-      dateTime: new Date(),
-      hostId: "",
-      isCanceled: false,
-      userGeolocation: {
-        longitude: GlobalContex?.location?.lng || 0,
-        latitude: GlobalContex?.location?.lat || 0,
-      },
-      distance: GlobalContex?.searchDistanceKm || 50,
+    GetGames({
+      title: "",
+      sortField: null,
+      startIndex: (page - 1) * onPage,
+      offset: onPage,
     })
   );
 
-  const [refreshing, setRefreshing] = useState(false);
-
-  const onRefresh = async () => {
+  const Refresh = async () => {
     setRefreshing(true);
     console.log("Refreshing data...");
-    if (data) {
-      data.length = 0;
-    }
+
     try {
       await refetch(); // Call the refetch function
     } catch (error) {
@@ -67,9 +40,26 @@ export default function HomeScreen() {
       setRefreshing(false);
     }
   };
+
+  const onRefresh = async () => {
+    setPage(1);
+  };
+
+  const onEndReached = () => {
+    setPage(page + 1);
+    console.log("page", page);
+  };
+
   useEffect(() => {
-    onRefresh();
-  }, [GlobalContex]);
+    if (page > 1) {
+      Refresh();
+    } else {
+      if (data) {
+        data.length = 0;
+        Refresh();
+      }
+    }
+  }, [page]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -77,7 +67,7 @@ export default function HomeScreen() {
         contentContainerStyle={{ gap: 20 }}
         data={data}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <EventCard card={item} />}
+        renderItem={({ item }) => <GameCard game={item} />}
         ListHeaderComponent={() => (
           <View style={styles.title}>
             <Image
@@ -94,13 +84,17 @@ export default function HomeScreen() {
             </View>
           </View>
         )}
+        onEndReachedThreshold={0.3}
+        onEndReached={onEndReached}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       />
     </SafeAreaView>
   );
-}
+};
+
+export default games;
 
 const styles = StyleSheet.create({
   container: {

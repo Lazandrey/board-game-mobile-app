@@ -13,16 +13,24 @@ import {
   GameType,
 } from "@/types/game.types";
 
-export const useFetch = (fn: () => Promise<EventType[] | GameType[]>) => {
-  const [data, setData] = useState<EventType[] | GameType[]>([]);
-  const [loading, setLoading] = useState(true);
+export const useFetch = <T extends unknown[]>(
+  fn: () => Promise<T>
+): {
+  data: T | null;
+  loading: boolean;
+  refetch: () => void;
+} => {
+  const [data, setData] = useState<T | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const fetchData = async () => {
+    console.log("fetchingData");
     setLoading(true);
     try {
+      console.log("fetching");
       console.log(fn);
       const res = await fn();
-      setData(res);
+      setData((prev) => (prev ? (prev.concat(res) as T) : res));
     } catch (error) {
       Alert.alert("Error", "Failed to fetch data");
     } finally {
@@ -35,6 +43,6 @@ export const useFetch = (fn: () => Promise<EventType[] | GameType[]>) => {
   }, []);
 
   const refetch = () => fetchData();
-  console.log(data, loading, refetch);
+
   return { data, loading, refetch };
 };

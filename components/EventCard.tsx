@@ -83,6 +83,9 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     gap: 20,
     paddingHorizontal: 10,
+    paddingVertical: 10,
+    borderRadius: 4,
+    overflow: "hidden",
   },
   eventGameWrapper: {
     display: "flex",

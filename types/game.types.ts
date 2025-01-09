@@ -24,7 +24,7 @@ export type GameType = {
 
 export type GameSearchType = {
   title: string;
-  sortField: SortGameFileds;
+  sortField: SortGameFileds | null;
   startIndex: number;
   offset: number;
 };
@@ -36,9 +36,6 @@ export type GameCardType = {
 
 export type GetGamesType = {
   gameSearchProps: GameSearchType;
-  setGames: (games: GameType[]) => void;
-  setFilteredGamesQty: (filteredGamesQty: number) => void;
-  setFetchError: (fetchError: number | null) => void;
 };
 
 export type GetGameType = {
@@ -87,8 +84,6 @@ export type GetEventsType = {
   dateTime?: Date;
   hostId?: string;
   isCanceled?: boolean;
-  setEvents: (events: EventType[]) => void;
-  setFetchError: (fetchError: number | null) => void;
   userGeolocation?: { longitude: number; latitude: number };
   distance?: number;
 };

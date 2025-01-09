@@ -9,6 +9,7 @@ import {
   UpdateEventType,
   EventType,
   GameType,
+  GameSearchType,
 } from "@/types/game.types";
 import axios, { AxiosError } from "axios";
 import * as SecureStore from "expo-secure-store";
@@ -21,8 +22,6 @@ export const GetEvents = async ({
   dateTime,
   hostId,
   isCanceled,
-  setEvents,
-  setFetchError,
   userGeolocation,
   distance,
 }: GetEventsType): Promise<EventType[]> => {
@@ -33,7 +32,14 @@ export const GetEvents = async ({
     const headers = {
       authorization: token,
     };
-
+    console.log(
+      gameTitle,
+      dateTime,
+      hostId,
+      isCanceled,
+      userGeolocation,
+      distance
+    );
     let startDate;
     if (dateTime) {
       startDate = new Date(dateTime).toISOString();
@@ -46,18 +52,33 @@ export const GetEvents = async ({
       }
     );
 
-    setEvents(response.data.events);
-
     return response.data.events;
   } catch (error: unknown) {
     console.log(error);
-    const errorResponse = error as AxiosError;
+  }
+  return [];
+};
 
-    if (errorResponse.status !== undefined) {
-      setFetchError(errorResponse.status);
-    } else {
-      setFetchError(null);
+export const GetGames = async (
+  gameSearchProps: GameSearchType
+): Promise<GameType[]> => {
+  try {
+    const token = "";
+    const headers = {
+      authorization: token,
+    };
+    if (!gameSearchProps.sortField) {
+      gameSearchProps.sortField = "rating";
     }
+    const response = await axios.get(
+      `${hostAddress}/game?title=${gameSearchProps.title}&sortField=${gameSearchProps.sortField}&start=${gameSearchProps.startIndex}&gamesOnPage=${gameSearchProps.offset}`,
+      {
+        headers,
+      }
+    );
+    return response.data.games;
+  } catch (error: unknown) {
+    console.log(error);
   }
   return [];
 };
