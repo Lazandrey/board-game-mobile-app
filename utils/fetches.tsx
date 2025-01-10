@@ -82,3 +82,19 @@ export const GetGames = async (
   }
   return [];
 };
+
+export const GetGameById = async (id: string): Promise<GameType[]> => {
+  try {
+    const token = "";
+    const headers = {
+      authorization: token,
+    };
+    const response = await axios.get(`${hostAddress}/game/${id}`, {
+      headers,
+    });
+    return [response.data.game];
+  } catch (error: unknown) {
+    console.log(error);
+  }
+  return [] as GameType[];
+};

@@ -13,6 +13,7 @@ import { useFetch } from "@/hooks/useFetch";
 import { GetEvents, GetGames } from "@/utils/fetches";
 import EventCard from "@/components/EventCard";
 import GameCard from "@/components/GameCard";
+import HeaderImage from "@/components/HeaderImage";
 
 const games = () => {
   const [refreshing, setRefreshing] = useState(false);
@@ -70,11 +71,7 @@ const games = () => {
         renderItem={({ item }) => <GameCard game={item} />}
         ListHeaderComponent={() => (
           <View style={styles.title}>
-            <Image
-              style={styles.logoImage}
-              resizeMode="contain"
-              source={require("../../assets/images/logoText.png")}
-            />
+            <HeaderImage />
             <View>
               <Image
                 style={styles.topImage}

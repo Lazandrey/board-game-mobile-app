@@ -3,6 +3,7 @@ import React from "react";
 import { GameType } from "@/types/game.types";
 import ThemedText from "./ThemedText";
 import { useTheme } from "@react-navigation/native";
+import { router } from "expo-router";
 
 type GameCardProps = {
   game: GameType;
@@ -10,7 +11,15 @@ type GameCardProps = {
 const GameCard = ({ game }: GameCardProps) => {
   const { colors } = useTheme();
   return (
-    <TouchableOpacity>
+    <TouchableOpacity
+      onPress={() => {
+        // console.log(`/games/${game.id}`);
+        router.push({
+          pathname: "/games/[id]",
+          params: { id: game.id },
+        });
+      }}
+    >
       <View style={{ ...styles.container, backgroundColor: colors.card }}>
         <ThemedText style={styles.titleText}>{game.title}</ThemedText>
         <View style={styles.gamaDatawrapper}>

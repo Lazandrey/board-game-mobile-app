@@ -33,6 +33,7 @@ import {
 } from "@/types/game.types";
 import EventCard from "@/components/EventCard";
 import { useTheme } from "@react-navigation/native";
+import HeaderImage from "@/components/HeaderImage";
 
 export default function HomeScreen() {
   const GlobalContex = useGlobalContext();
@@ -80,16 +81,12 @@ export default function HomeScreen() {
         renderItem={({ item }) => <EventCard card={item} />}
         ListHeaderComponent={() => (
           <View style={styles.title}>
-            <Image
-              style={styles.logoImage}
-              resizeMode="contain"
-              source={require("../../assets/images/logoText.png")}
-            />
+            <HeaderImage />
             <View>
               <Image
                 style={styles.topImage}
                 resizeMode="cover"
-                source={require("../../assets/images/board-game.png")}
+                source={require("../../../assets/images/board-game.png")}
               />
             </View>
           </View>
