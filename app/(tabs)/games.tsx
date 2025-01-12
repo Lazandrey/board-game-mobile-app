@@ -5,6 +5,8 @@ import {
   StyleSheet,
   RefreshControl,
   Image,
+  TextInput,
+  TouchableOpacity,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -14,6 +16,10 @@ import { GetEvents, GetGames } from "@/utils/fetches";
 import EventCard from "@/components/EventCard";
 import GameCard from "@/components/GameCard";
 import HeaderImage from "@/components/HeaderImage";
+import { Ionicons } from "@expo/vector-icons";
+import { useTheme } from "@react-navigation/native";
+import GameSearchBar from "@/components/GameSearchBar";
+import { CustomDarkTheme } from "..//_layout";
 
 const games = () => {
   const [refreshing, setRefreshing] = useState(false);
@@ -22,12 +28,15 @@ const games = () => {
   const GlobalContex = useGlobalContext();
   const { data, loading, refetch } = useFetch(() =>
     GetGames({
-      title: "",
+      title: searchQuery,
       sortField: null,
       startIndex: (page - 1) * onPage,
       offset: onPage,
     })
   );
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const { colors } = useTheme();
 
   const Refresh = async () => {
     setRefreshing(true);
@@ -62,6 +71,13 @@ const games = () => {
     }
   }, [page]);
 
+  useEffect(() => {
+    if (data) {
+      data.length = 0;
+      Refresh();
+    }
+  }, [searchQuery]);
+
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
@@ -79,6 +95,10 @@ const games = () => {
                 source={require("../../assets/images/board-game.png")}
               />
             </View>
+            <GameSearchBar
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+            />
           </View>
         )}
         onEndReachedThreshold={0.3}
@@ -117,5 +137,36 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: "bold",
     fontFamily: "Baloo 2",
+  },
+  searchSectionWrapper: {
+    display: "flex",
+    flexDirection: "row",
+    gap: 10,
+    alignItems: "center",
+    justifyContent: "flex-start",
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+  },
+  searchBarWrapper: {
+    flex: 1,
+    display: "flex",
+    flexDirection: "row",
+    gap: 10,
+    alignItems: "center",
+    justifyContent: "flex-start",
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    backgroundColor: CustomDarkTheme.colors.card,
+    borderRadius: 4,
+  },
+  searchInput: {
+    flex: 1,
+    color: CustomDarkTheme.colors.text,
+    fontSize: 16,
+  },
+  fiterBtn: {
+    backgroundColor: CustomDarkTheme.colors.card,
+    padding: 10,
+    borderRadius: 4,
   },
 });
