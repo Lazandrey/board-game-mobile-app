@@ -30,7 +30,7 @@ export const useFetch = <T extends unknown[]>(
       console.log("fetching");
       console.log(fn);
       const res = await fn();
-      setData((prev) => (prev ? (prev.concat(res) as T) : res));
+      setData(res);
     } catch (error) {
       Alert.alert("Error", "Failed to fetch data");
     } finally {

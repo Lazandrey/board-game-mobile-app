@@ -10,9 +10,16 @@ import {
   EventType,
   GameType,
   GameSearchType,
+  UserSignInPropsType,
+  UserSignInType,
+  UserSignUpPropsType,
+  UserUpdatePropsType,
 } from "@/types/game.types";
 import axios, { AxiosError } from "axios";
 import * as SecureStore from "expo-secure-store";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useGlobalContext } from "@/context/GlobalProvider";
+import { Platform } from "react-native";
 
 const hostAddress = `http://192.168.1.3:3002`;
 // const hostAddress = process.env.BASE_URL;
@@ -26,9 +33,15 @@ export const GetEvents = async ({
   distance,
 }: GetEventsType): Promise<EventType[]> => {
   try {
-    // const token = await SecureStore.getItemAsync("authToken");
-    // if (!token) throw new Error("No token found");
-    const token = "";
+    let token;
+    if (Platform.OS === "web") {
+      token = await AsyncStorage.getItem("authToken");
+    } else {
+      token = await SecureStore.getItemAsync("authToken");
+    }
+    if (!token) {
+      token = "";
+    }
     const headers = {
       authorization: token,
     };
@@ -63,7 +76,15 @@ export const GetGames = async (
   gameSearchProps: GameSearchType
 ): Promise<GameType[]> => {
   try {
-    const token = "";
+    let token;
+    if (Platform.OS === "web") {
+      token = await AsyncStorage.getItem("authToken");
+    } else {
+      token = await SecureStore.getItemAsync("authToken");
+    }
+    if (!token) {
+      token = "";
+    }
     const headers = {
       authorization: token,
     };
@@ -76,6 +97,7 @@ export const GetGames = async (
         headers,
       }
     );
+
     return response.data.games;
   } catch (error: unknown) {
     console.log(error);
@@ -85,7 +107,15 @@ export const GetGames = async (
 
 export const GetGameById = async (id: string): Promise<GameType[]> => {
   try {
-    const token = "";
+    let token;
+    if (Platform.OS === "web") {
+      token = await AsyncStorage.getItem("authToken");
+    } else {
+      token = await SecureStore.getItemAsync("authToken");
+    }
+    if (!token) {
+      token = "";
+    }
     const headers = {
       authorization: token,
     };
@@ -97,4 +127,169 @@ export const GetGameById = async (id: string): Promise<GameType[]> => {
     console.log(error);
   }
   return [] as GameType[];
+};
+
+export const SignIn = async (
+  signInData: UserSignInPropsType
+): Promise<UserSignInType> => {
+  try {
+    const response = await axios.post(`${hostAddress}/user/login`, signInData);
+
+    if (response.status === 401) {
+      console.log("Invalid credentials");
+      return {
+        isLoggedIn: false,
+        token: "",
+        email: "",
+        username: "",
+        userId: "",
+        responseStatus: response.status,
+      };
+    }
+
+    if (response.status === 200) {
+      console.log("Login successful");
+      console.log("token", response.data.token);
+      if (Platform.OS === "web") {
+        await AsyncStorage.setItem("authToken", response.data.token);
+      } else {
+        await SecureStore.setItemAsync("authToken", response.data.token);
+      }
+    }
+    console.log(response.data.userName);
+    console.log(response.data.userId);
+    console.log(signInData.email);
+
+    await AsyncStorage.setItem("userId", response.data.userId);
+    await AsyncStorage.setItem("userName", response.data.userName);
+    await AsyncStorage.setItem("email", signInData.email);
+    await AsyncStorage.setItem("isLoggedIn", "true");
+
+    return {
+      isLoggedIn: true,
+      token: response.data.token,
+      email: signInData.email,
+      username: response.data.userName,
+      userId: response.data.userId,
+      responseStatus: response.status,
+    };
+  } catch (error: unknown) {
+    console.log("fetch error", error);
+    const errorResponse = error as AxiosError;
+
+    if (errorResponse.response?.status === 401) {
+      if (Platform.OS === "web") {
+        await AsyncStorage.setItem("authToken", "");
+      } else {
+        await SecureStore.setItemAsync("authToken", "");
+      }
+      await AsyncStorage.setItem("userId", "");
+      await AsyncStorage.setItem("userName", "");
+      await AsyncStorage.setItem("email", "");
+      await AsyncStorage.setItem("isLoggedIn", "false");
+      return {
+        isLoggedIn: false,
+        token: "",
+        email: signInData.email,
+        username: "",
+        userId: "",
+        responseStatus: errorResponse.response?.status,
+      };
+    }
+    return {} as UserSignInType;
+  }
+};
+
+export const Signup = async (
+  signupData: UserSignUpPropsType
+): Promise<UserSignInType> => {
+  try {
+    const response = await axios.post(`${hostAddress}/user/signin`, signupData);
+    if (response.status === 201) {
+      console.log("Login successful");
+      console.log("token", response.data.tokenn);
+      if (Platform.OS === "web") {
+        await AsyncStorage.setItem("authToken", response.data.tokenn);
+      } else {
+        await SecureStore.setItemAsync("authToken", response.data.token);
+      }
+    }
+    console.log(response.data.userName);
+    console.log(response.data.userId);
+    console.log(signupData.email);
+
+    await AsyncStorage.setItem("userId", response.data.userId);
+    await AsyncStorage.setItem("userName", response.data.userName);
+    await AsyncStorage.setItem("email", signupData.email);
+    await AsyncStorage.setItem("isLoggedIn", "true");
+
+    return {
+      isLoggedIn: true,
+      token: response.data.token,
+      email: signupData.email,
+      username: response.data.userName,
+      userId: response.data.userId,
+      responseStatus: response.status,
+    };
+  } catch (error: unknown) {
+    console.log(error);
+    return {} as UserSignInType;
+  }
+};
+
+export const updateUser = async (
+  updateData: UserUpdatePropsType
+): Promise<UserSignInType> => {
+  try {
+    let token;
+    if (Platform.OS === "web") {
+      token = await AsyncStorage.getItem("authToken");
+    } else {
+      token = await SecureStore.getItemAsync("authToken");
+    }
+    if (!token) {
+      token = "";
+    }
+    console.log("token", token);
+    const headers = {
+      authorization: token,
+    };
+
+    const response = await axios.put(
+      `${hostAddress}/user/update/`,
+      updateData,
+      {
+        headers,
+      }
+    );
+    if (response.status === 200) {
+      if (Platform.OS === "web") {
+        await AsyncStorage.setItem("authToken", response.data.tokenn);
+      } else {
+        await SecureStore.setItemAsync("authToken", response.data.token);
+      }
+      await AsyncStorage.setItem("userId", response.data.userId);
+      await AsyncStorage.setItem("userName", response.data.userName);
+      await AsyncStorage.setItem("email", updateData.email);
+      await AsyncStorage.setItem("isLoggedIn", "true");
+    }
+    return {
+      isLoggedIn: true,
+      token: response.data.token,
+      email: updateData.email,
+      username: response.data.userName,
+      userId: response.data.userId,
+      responseStatus: response.status,
+    };
+  } catch (error: unknown) {
+    console.log(error);
+    return {
+      isLoggedIn: false,
+      token: "",
+      email: "",
+      username: "",
+      userId: "",
+      responseStatus: error,
+    } as UserSignInType;
+  }
 };

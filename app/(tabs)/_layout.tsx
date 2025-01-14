@@ -12,9 +12,17 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 import { useTheme } from "@react-navigation/native";
 import { FontAwesome } from "@expo/vector-icons";
 
+import { useGlobalContext } from "@/context/GlobalProvider";
+
 export default function TabLayout() {
   const colorScheme = useColorScheme();
   const { colors } = useTheme();
+  const GlobalContex = useGlobalContext();
+
+  const getFirsNmae = () => {
+    const name = GlobalContex.isLoggedIn ? GlobalContex.name : "Profile";
+    return name.split(" ")[0];
+  };
 
   return (
     <Tabs
@@ -44,6 +52,16 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="(events)"
+        options={{
+          title: "Events",
+          ...(!GlobalContex.isLoggedIn && { href: null }),
+          tabBarIcon: ({ color }) => (
+            <MaterialIcons name="event-available" size={24} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="games"
         options={{
           title: "Games",
@@ -53,9 +71,9 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="profile"
+        name="(profile)"
         options={{
-          title: "Profile",
+          title: getFirsNmae(),
           tabBarIcon: ({ color }) => (
             <FontAwesome name="user" size={28} color={color} />
           ),

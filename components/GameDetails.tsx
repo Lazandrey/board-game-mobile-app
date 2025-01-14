@@ -2,21 +2,32 @@ import { StyleSheet, Text, View, Image } from "react-native";
 import HTMLView from "react-native-htmlview";
 import { GameType } from "@/types/game.types";
 import ThemedText from "./ThemedText";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { ReactNativeZoomableView } from "@openspacelabs/react-native-zoomable-view";
 import { ThemedView } from "./ThemedView";
+import { LayoutChangeEvent } from "react-native";
 
 const GameDetails = (game: GameType) => {
+  const [contentDimensions, setContentDimensions] = useState({
+    width: 300,
+    height: 400,
+  });
+
+  const onContentLayout = (event: LayoutChangeEvent) => {
+    const { width, height } = event.nativeEvent.layout;
+    setContentDimensions({ width, height });
+  };
   const richText = useRef(null);
   return (
     <View>
-      <ReactNativeZoomableView
-        maxZoom={3}
-        minZoom={1}
-        // contentWidth={300}
-        // contentHeight={400}
-        style={styles.container}
-      >
+      {/* <ReactNativeZoomableView */}
+      <View style={styles.container}>
+        {/* maxZoom={3}
+        minZoom={0.8}
+        contentWidth={contentDimensions.width}
+        contentHeight={contentDimensions.height}
+        style={styles.container} */}
+        {/* > */}
         <ThemedText style={styles.titleText}>{game.title}</ThemedText>
         <Image source={{ uri: game.gameImageUrl }} style={styles.image} />
         <View style={styles.gameDataWrapper}>
@@ -34,7 +45,8 @@ const GameDetails = (game: GameType) => {
           <ThemedText style={styles.text}>Age: {game.age}</ThemedText>
         </View>
         <HTMLView value={`<p>${game.description}</p>`} stylesheet={styles} />
-      </ReactNativeZoomableView>
+      </View>
+      {/* </ReactNativeZoomableView> */}
     </View>
   );
 };
@@ -46,10 +58,11 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     gap: 10,
-    paddingHorizontal: 10,
+    // paddingHorizontal: 10,
     paddingBottom: 10,
     borderRadius: 4,
     overflow: "hidden",
+    width: "100%",
   },
   gameDataWrapper: {
     width: "100%",

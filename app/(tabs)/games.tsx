@@ -20,23 +20,29 @@ import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "@react-navigation/native";
 import GameSearchBar from "@/components/GameSearchBar";
 import { CustomDarkTheme } from "..//_layout";
+import Header from "@/components/Header";
+import { SortGameFileds, GameType } from "@/types/game.types";
 
 const games = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [page, setPage] = useState(1);
-  const [onPage, setOnPage] = useState(30);
+  const [onPage, setOnPage] = useState(5);
   const GlobalContex = useGlobalContext();
   const { data, loading, refetch } = useFetch(() =>
     GetGames({
       title: searchQuery,
-      sortField: null,
+      sortField: selectedSorting,
       startIndex: (page - 1) * onPage,
       offset: onPage,
     })
   );
-  const [searchQuery, setSearchQuery] = useState("");
 
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedSorting, setSelectedSorting] =
+    useState<SortGameFileds>("rating");
   const { colors } = useTheme();
+
+  const [showsData, setShowsData] = useState<GameType[]>([]);
 
   const Refresh = async () => {
     setRefreshing(true);
@@ -51,57 +57,54 @@ const games = () => {
     }
   };
 
+  useEffect(() => {
+    if (data) {
+      if (page < 3) {
+        setShowsData([]);
+        console.log("empty data", data);
+      }
+      setShowsData((prevShowsData) => [...prevShowsData, ...data]);
+    }
+    console.log(page);
+    console.log(showsData);
+  }, [data]);
+
   const onRefresh = async () => {
     setPage(1);
   };
 
   const onEndReached = () => {
     setPage(page + 1);
-    console.log("page", page);
   };
 
   useEffect(() => {
-    if (page > 1) {
-      Refresh();
-    } else {
-      if (data) {
-        data.length = 0;
-        Refresh();
-      }
-    }
+    Refresh();
   }, [page]);
 
   useEffect(() => {
-    if (data) {
-      data.length = 0;
-      Refresh();
-    }
-  }, [searchQuery]);
+    setPage(1);
+    Refresh();
+  }, [searchQuery, selectedSorting]);
 
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
         contentContainerStyle={{ gap: 20 }}
-        data={data}
-        keyExtractor={(item) => item.id}
+        data={showsData}
+        keyExtractor={(game) => game.id}
         renderItem={({ item }) => <GameCard game={item} />}
         ListHeaderComponent={() => (
           <View style={styles.title}>
-            <HeaderImage />
-            <View>
-              <Image
-                style={styles.topImage}
-                resizeMode="cover"
-                source={require("../../assets/images/board-game.png")}
-              />
-            </View>
+            <Header />
             <GameSearchBar
               searchQuery={searchQuery}
               setSearchQuery={setSearchQuery}
+              selectedSorting={selectedSorting}
+              setSelectedSorting={setSelectedSorting}
             />
           </View>
         )}
-        onEndReachedThreshold={0.3}
+        onEndReachedThreshold={0.8}
         onEndReached={onEndReached}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />

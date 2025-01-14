@@ -34,6 +34,7 @@ import {
 import EventCard from "@/components/EventCard";
 import { useTheme } from "@react-navigation/native";
 import HeaderImage from "@/components/HeaderImage";
+import Header from "@/components/Header";
 
 export default function HomeScreen() {
   const GlobalContex = useGlobalContext();
@@ -57,9 +58,7 @@ export default function HomeScreen() {
   const onRefresh = async () => {
     setRefreshing(true);
     console.log("Refreshing data...");
-    if (data) {
-      data.length = 0;
-    }
+
     try {
       await refetch(); // Call the refetch function
     } catch (error) {
@@ -71,7 +70,6 @@ export default function HomeScreen() {
   useEffect(() => {
     onRefresh();
   }, [GlobalContex]);
-
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
@@ -79,18 +77,7 @@ export default function HomeScreen() {
         data={data}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => <EventCard card={item} />}
-        ListHeaderComponent={() => (
-          <View style={styles.title}>
-            <HeaderImage />
-            <View>
-              <Image
-                style={styles.topImage}
-                resizeMode="cover"
-                source={require("../../../assets/images/board-game.png")}
-              />
-            </View>
-          </View>
-        )}
+        ListHeaderComponent={() => <Header />}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }

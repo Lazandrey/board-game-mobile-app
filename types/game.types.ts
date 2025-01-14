@@ -112,3 +112,30 @@ export type GamesSearchOverlayProps = {
   setIsOpen: (isOpen: boolean) => void;
   setSelectedGame: (game: GameType | null) => void;
 };
+
+export type UserSignInPropsType = {
+  email: string;
+  password: string;
+};
+export type UserSignUpPropsType = {
+  name: string;
+  email: string;
+  password: string;
+};
+export type UserSignInType = {
+  isLoggedIn: boolean;
+  token: string;
+  email: string;
+  username: string;
+  userId: string;
+  responseMessage?: string | undefined | unknown;
+  responseStatus: number;
+};
+
+export type UserUpdatePropsType = {
+  id: string;
+  name: string;
+  email: string;
+  password: string;
+  newPassword: string;
+};

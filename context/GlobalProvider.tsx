@@ -1,10 +1,23 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { useStorageState } from "../hooks/useStorageState";
+
 import * as Location from "expo-location";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as SecureStore from "expo-secure-store";
+import { Platform } from "react-native";
 export type UserContextType = {
   isLoggedIn: boolean;
   searchDistanceKm: number;
+  userId: string;
+  name: string;
+  email: string;
   location?: { lat: number; lng: number };
+  setLocation: (location: Location.LocationObject) => void;
+  setIsLoggedIn: (isLoggedIn: boolean) => void;
+  setName: (name: string) => void;
+  setEmail: (email: string) => void;
+  setUserId: (userId: string) => void;
+  signOut: () => void;
+  setSearchDistanceKm: (searchDistanceKm: number) => void;
 };
 
 const GlobalContext = createContext<UserContextType | null>(null);
@@ -30,8 +43,28 @@ export default function GlobalProvider({ children }: any) {
     coords: { latitude: 0, longitude: 0 },
   } as Location.LocationObject);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [searchDistanceKm, setSearchDistanceKm] = useState<number>(20);
+  const [searchDistanceKm, setSearchDistanceKm] = useState<number>(50);
+  const [name, setName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [userId, setUserId] = useState<string>("");
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  const signOut = async () => {
+    setIsLoggedIn(false);
+    setName("");
+    setEmail("");
+    setUserId("");
+    if (Platform.OS === "web") {
+      await AsyncStorage.setItem("authToken", "");
+    } else {
+      await SecureStore.setItemAsync("authToken", "");
+    }
+    await AsyncStorage.setItem("userId", "");
+    await AsyncStorage.setItem("userName", "");
+    await AsyncStorage.setItem("email", "");
+    await AsyncStorage.setItem("isLoggedIn", "false");
+  };
+
   useEffect(() => {
     async function getCurrentLocation() {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -44,7 +77,44 @@ export default function GlobalProvider({ children }: any) {
       setLocation(location);
     }
 
+    const getStoredData = async () => {
+      try {
+        const DistanceStorage = await AsyncStorage.getItem("searchDistanceKm");
+
+        if (DistanceStorage !== null) {
+          setSearchDistanceKm(parseInt(DistanceStorage));
+        } else {
+          setSearchDistanceKm(50);
+        }
+        console.log(searchDistanceKm);
+        const isLoggedInStorage = await AsyncStorage.getItem("isLoggedIn");
+        console.log(isLoggedInStorage);
+        if (isLoggedInStorage === "true") {
+          setIsLoggedIn(true);
+        }
+        const nameStorage = await AsyncStorage.getItem("userName");
+        console.log(nameStorage);
+        if (nameStorage !== null) {
+          setName(nameStorage);
+        }
+        const emailStorage = await AsyncStorage.getItem("email");
+        console.log(emailStorage);
+        if (emailStorage !== null) {
+          setEmail(emailStorage);
+        }
+        const userIdStorage = await AsyncStorage.getItem("userId");
+        console.log(userIdStorage);
+        if (userIdStorage !== null) {
+          setUserId(userIdStorage);
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    };
+
     getCurrentLocation();
+
+    getStoredData();
   }, []);
 
   return (
@@ -52,10 +122,20 @@ export default function GlobalProvider({ children }: any) {
       value={{
         isLoggedIn,
         searchDistanceKm,
+        userId,
+        name,
+        email,
         location: {
           lat: location?.coords.latitude,
           lng: location?.coords.longitude,
         },
+        setLocation,
+        setIsLoggedIn,
+        setName,
+        setEmail,
+        setUserId,
+        signOut,
+        setSearchDistanceKm,
       }}
     >
       {children}
