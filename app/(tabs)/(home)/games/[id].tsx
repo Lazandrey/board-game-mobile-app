@@ -22,7 +22,7 @@ const Game = () => {
       <ScrollView contentContainerStyle={styles.wrapper}>
         <HeaderImage />
         <GameDetails {...game} />
-        <CustomButton title="Return" onPress={() => router.push("/games")} />
+        {/* <CustomButton title="Return" onPress={() => router.push("/games")} /> */}
       </ScrollView>
     </SafeAreaView>
   );

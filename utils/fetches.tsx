@@ -1,12 +1,5 @@
 import {
-  EventRegisterType,
   GetEventsType,
-  GetEventType,
-  GetGamesType,
-  GetGameType,
-  IsUserRegisteredType,
-  SaveEventType,
-  UpdateEventType,
   EventType,
   GameType,
   GameSearchType,
@@ -45,19 +38,12 @@ export const GetEvents = async ({
     const headers = {
       authorization: token,
     };
-    console.log(
-      gameTitle,
-      dateTime,
-      hostId,
-      isCanceled,
-      userGeolocation,
-      distance
-    );
+
     let startDate;
     if (dateTime) {
       startDate = new Date(dateTime).toISOString();
     }
-
+    console.log("host id", hostId);
     const response = await axios.get(
       `${hostAddress}/event?title=${gameTitle}&startDate=${startDate}&hostId=${hostId}&isCanceled=${isCanceled}&userLongitude=${userGeolocation?.longitude}&userLatitude=${userGeolocation?.latitude}&distance=${distance}`,
       {
@@ -70,6 +56,31 @@ export const GetEvents = async ({
     console.log(error);
   }
   return [];
+};
+
+export const GetEventById = async (id: string): Promise<EventType[]> => {
+  try {
+    let token;
+    if (Platform.OS === "web") {
+      token = await AsyncStorage.getItem("authToken");
+    } else {
+      token = await SecureStore.getItemAsync("authToken");
+    }
+    if (!token) {
+      token = "";
+    }
+    const headers = {
+      authorization: token,
+    };
+    const response = await axios.get(`${hostAddress}/event/${id}`, {
+      headers,
+    });
+
+    return [response.data.event];
+  } catch (error: unknown) {
+    console.log(error);
+  }
+  return [] as EventType[];
 };
 
 export const GetGames = async (
@@ -250,7 +261,7 @@ export const updateUser = async (
     if (!token) {
       token = "";
     }
-    console.log("token", token);
+
     const headers = {
       authorization: token,
     };
@@ -291,5 +302,73 @@ export const updateUser = async (
       userId: "",
       responseStatus: error,
     } as UserSignInType;
+  }
+};
+
+export const cancelRegistrationToEvent = async (
+  eventId: string
+): Promise<number | undefined> => {
+  try {
+    let token;
+    if (Platform.OS === "web") {
+      token = await AsyncStorage.getItem("authToken");
+    } else {
+      token = await SecureStore.getItemAsync("authToken");
+    }
+    if (!token) {
+      token = "";
+    }
+
+    const headers = {
+      authorization: token,
+    };
+
+    const response = await axios.post(
+      `${hostAddress}/event/${eventId}/decline`,
+      {},
+      {
+        headers,
+      }
+    );
+
+    return response.status;
+  } catch (error) {
+    console.log(error);
+    const errorResponse = error as AxiosError;
+
+    return errorResponse.response?.status;
+  }
+};
+
+export const registerToEvent = async (
+  eventId: string
+): Promise<number | undefined> => {
+  try {
+    let token;
+    if (Platform.OS === "web") {
+      token = await AsyncStorage.getItem("authToken");
+    } else {
+      token = await SecureStore.getItemAsync("authToken");
+    }
+    if (!token) {
+      token = "";
+    }
+
+    const headers = {
+      authorization: token,
+    };
+    const response = await axios.post(
+      `${hostAddress}/event/${eventId}/accept`,
+      {},
+      {
+        headers,
+      }
+    );
+    return response.status;
+  } catch (error) {
+    console.log(error);
+    const errorResponse = error as AxiosError;
+
+    return errorResponse.response?.status;
   }
 };

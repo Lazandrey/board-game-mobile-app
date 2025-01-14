@@ -20,7 +20,6 @@ import { useGlobalContext } from "@/context/GlobalProvider";
 import { useFetch } from "@/hooks/useFetch";
 import { GetEvents } from "@/utils/fetches";
 import {
-  EventRegisterType,
   GetEventsType,
   GetEventType,
   GetGamesType,
@@ -38,7 +37,7 @@ import Header from "@/components/Header";
 
 export default function HomeScreen() {
   const GlobalContex = useGlobalContext();
-  //
+
   const { data, loading, refetch } = useFetch(() =>
     GetEvents({
       gameTitle: "",

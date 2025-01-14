@@ -6,12 +6,15 @@ import {
   Image,
   useColorScheme,
 } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { EventType } from "@/types/game.types";
 import { opacity } from "react-native-reanimated/lib/typescript/Colors";
 import { ThemedView } from "./ThemedView";
 import ThemedText from "./ThemedText";
 import { useTheme } from "@react-navigation/native";
+import { router } from "expo-router";
+import { useGlobalContext } from "@/context/GlobalProvider";
+import { CustomDarkTheme } from "@/app/_layout";
 
 type EventCardProps = {
   card: EventType;
@@ -19,12 +22,41 @@ type EventCardProps = {
 
 const EventCard = ({ card }: EventCardProps) => {
   const { colors } = useTheme();
+  const GlobalContext = useGlobalContext();
+  const [isHost, setIsHost] = useState(false);
+  const [isJoined, setIsJoined] = useState(false);
+
+  useEffect(() => {
+    setIsHost(GlobalContext.userId === card.host.id);
+    setIsJoined(
+      card.accepted_persons_ids.some((p) => p.user.id === GlobalContext.userId)
+    );
+  }, [GlobalContext.userId]);
 
   return (
-    <TouchableOpacity>
+    <TouchableOpacity
+      onPress={() => {
+        router.push({
+          pathname: "/(tabs)/(events)/[id]",
+          params: { id: card.id },
+        });
+      }}
+    >
       <View
         style={{ ...styles.eventCardWrapper, backgroundColor: colors.card }}
       >
+        <View style={styles.userStatusLine}>
+          {isHost && (
+            <View style={styles.hostBadgeWrapper}>
+              <ThemedText style={styles.hostBadgeText}>Host</ThemedText>
+            </View>
+          )}
+          {isJoined && (
+            <View style={styles.hostBadgeWrapper}>
+              <ThemedText style={styles.hostBadgeText}>Joined</ThemedText>
+            </View>
+          )}
+        </View>
         <View style={styles.eventGameWrapper}>
           <View>
             <Image
@@ -152,5 +184,25 @@ const styles = StyleSheet.create({
   eventDescriptionText: {
     width: "100%",
     fontSize: 18,
+  },
+  hostBadgeWrapper: {
+    backgroundColor: CustomDarkTheme.colors.notification,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 4,
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+  },
+  hostBadgeText: {
+    fontSize: 16,
+    color: CustomDarkTheme.colors.primary,
+  },
+
+  userStatusLine: {
+    display: "flex",
+    flexDirection: "row",
+
+    gap: 5,
   },
 });

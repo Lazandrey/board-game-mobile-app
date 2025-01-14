@@ -76,8 +76,7 @@ export type GetEventType = {
 export type UpdateEventType = {
   id: string;
   event: EventType;
-  setResponse: (response: number | null) => void;
-  setFetchError: (fetchError: number | null) => void;
+
 };
 export type GetEventsType = {
   gameTitle?: string;
@@ -88,12 +87,7 @@ export type GetEventsType = {
   distance?: number;
 };
 
-export type EventRegisterType = {
-  eventId: string;
-  setFetchError: (fetchError: number | null) => void;
-  setIsRegistered: (isRegistered: string) => void;
-  setIsShowAddUserButton: (isShowAddUserButton: boolean) => void;
-};
+
 
 export type IsUserRegisteredType = {
   eventId: string;
