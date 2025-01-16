@@ -30,16 +30,14 @@ const SignInForm = () => {
 
   const onLogin = async () => {
     setIsSubmitted(true);
-    console.log(userEmail, password);
 
     if (userEmail === "" || password === "") {
-      console.log("Please fill in all fields");
       Alert.alert("Error", "Please fill in all fields");
     }
     const res = await SignIn({ email: userEmail, password: password });
     if (res.responseStatus === 401) {
       Alert.alert("Error", "Invalid email or password");
-      console.log("Invalid email or password");
+
       signOut();
       setIsSubmitted(false);
     }
@@ -50,9 +48,9 @@ const SignInForm = () => {
       setEmail(res.email);
       setUserId(res.userId);
     }
-    console.log(res);
+
     setIsSubmitted(true);
-    router.push("/(tabs)/(profile)");
+    router.push("/");
   };
 
   return (

@@ -75,7 +75,7 @@ const SignupForm = () => {
         onTextChange={setConfirmPassword}
         placeholder="Confirm password"
       />
-      <CustomButton title="Sign In" onPress={onLogin} />
+      <CustomButton title="Signup" onPress={onLogin} />
     </View>
   );
 };

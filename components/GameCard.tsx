@@ -7,17 +7,16 @@ import { router } from "expo-router";
 
 type GameCardProps = {
   game: GameType;
+
+  onPress: () => void;
 };
-const GameCard = ({ game }: GameCardProps) => {
+const GameCard = ({ game, onPress }: GameCardProps) => {
   const { colors } = useTheme();
   return (
     <TouchableOpacity
       onPress={() => {
         // console.log(`/games/${game.id}`);
-        router.push({
-          pathname: "/games/[id]",
-          params: { id: game.id },
-        });
+        onPress();
       }}
     >
       <View style={{ ...styles.container, backgroundColor: colors.card }}>

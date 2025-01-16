@@ -30,6 +30,19 @@ export const CustomDarkTheme: Theme = {
   fonts: DarkTheme.fonts,
 };
 
+// export const CustomDarkTheme: Theme = {
+//   dark: true,
+//   colors: {
+//     primary: "#3E4849",
+//     background: "#373B3C",
+//     card: "#687D78",
+//     text: "white",
+//     border: "#E5AF89",
+//     notification: "#E3CEAF",
+//   },
+//   fonts: DarkTheme.fonts,
+// };
+
 export default function RootLayout() {
   const colorScheme = useColorScheme();
 
@@ -53,7 +66,11 @@ export default function RootLayout() {
       <ThemeProvider value={CustomDarkTheme}>
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="+not-found" />
+          <Stack.Screen name="(profile)" options={{ headerShown: false }} />
+          <Stack.Screen name="(games)" options={{ headerShown: false }} />
+          <Stack.Screen name="(events)" options={{ headerShown: false }} />
+
+          <Stack.Screen name="+not-found" options={{ headerShown: true }} />
         </Stack>
         <StatusBar style="auto" />
       </ThemeProvider>

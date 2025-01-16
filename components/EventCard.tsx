@@ -1,15 +1,7 @@
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  Image,
-  useColorScheme,
-} from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View, Image } from "react-native";
 import React, { useEffect, useState } from "react";
 import { EventType } from "@/types/game.types";
-import { opacity } from "react-native-reanimated/lib/typescript/Colors";
-import { ThemedView } from "./ThemedView";
+
 import ThemedText from "./ThemedText";
 import { useTheme } from "@react-navigation/native";
 import { router } from "expo-router";
@@ -25,6 +17,12 @@ const EventCard = ({ card }: EventCardProps) => {
   const GlobalContext = useGlobalContext();
   const [isHost, setIsHost] = useState(false);
   const [isJoined, setIsJoined] = useState(false);
+  const dateOptions: Intl.DateTimeFormatOptions = {
+    weekday: "long",
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+  };
 
   useEffect(() => {
     setIsHost(GlobalContext.userId === card.host.id);
@@ -37,7 +35,7 @@ const EventCard = ({ card }: EventCardProps) => {
     <TouchableOpacity
       onPress={() => {
         router.push({
-          pathname: "/(tabs)/(events)/[id]",
+          pathname: "/(events)/[id]",
           params: { id: card.id },
         });
       }}
@@ -64,24 +62,34 @@ const EventCard = ({ card }: EventCardProps) => {
               source={{ uri: card.game.gameImageUrl }}
             />
           </View>
-          <View style={styles.eventGameDescriptionWrapper}>
+
+          <View style={styles.gameTitleWrapper}>
             <ThemedText style={styles.gameTitle}>{card.game.title}</ThemedText>
-            <ThemedText
-              style={styles.gameDescription}
-              numberOfLines={2}
-              ellipsizeMode="tail"
-            >
-              {card.game.description}
-            </ThemedText>
           </View>
         </View>
+        <View style={styles.eventGameDescriptionWrapper}>
+          <ThemedText
+            style={styles.gameDescription}
+            numberOfLines={2}
+            ellipsizeMode="tail"
+          >
+            {card.game.description}
+          </ThemedText>
+        </View>
+
         <View style={styles.eventDetailsWrapper}>
           <View style={styles.dateTimeWrapper}>
             <ThemedText style={styles.dateTimeText}>
-              Date: {new Date(card.date_time).toLocaleDateString("lt-LT")}
-            </ThemedText>
-            <ThemedText style={styles.dateTimeText}>
-              Time: {new Date(card.date_time).toLocaleTimeString("lt-LT")}
+              Date:{" "}
+              {new Date(card.date_time).toLocaleDateString(
+                "lt-LT",
+                dateOptions
+              )}
+              {", "}
+              {new Date(card.date_time).toLocaleTimeString("lt-LT", {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
             </ThemedText>
           </View>
           <View style={styles.saetsAvailableWrapper}>
@@ -123,16 +131,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
   },
-  eventGameDescriptionWrapper: {
-    width: "100%",
-    height: 100,
-    display: "flex",
-    flexDirection: "column",
-    gap: 10,
-    flexShrink: 1,
-    overflow: "hidden",
-    justifyContent: "space-between",
-  },
+
   gameImage: {
     width: 100,
     height: 100,
@@ -140,21 +139,27 @@ const styles = StyleSheet.create({
     marginRight: 8,
     overflow: "hidden",
   },
+  gameTitleWrapper: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    flex: 1,
+  },
   gameTitle: {
-    height: 30,
     overflow: "hidden",
-    fontSize: 20,
+    fontSize: 40,
     fontWeight: "bold",
+    textAlign: "center",
+  },
+  eventGameDescriptionWrapper: {
+    display: "flex",
+    flexDirection: "column",
+    width: "100%",
   },
   gameDescription: {
-    height: 70,
-    // flex: 1,
-    flexShrink: 1,
-    overflow: "hidden",
-    fontSize: 16,
+    fontSize: 30,
   },
   eventDetailsWrapper: {
-    height: 130,
     display: "flex",
     flexDirection: "column",
     gap: 4,
@@ -169,7 +174,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   dateTimeText: {
-    fontSize: 18,
+    fontSize: 25,
+    fontWeight: "bold",
   },
   saetsAvailableWrapper: {
     width: "100%",
@@ -179,11 +185,11 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   saetsAvailableText: {
-    fontSize: 18,
+    fontSize: 25,
   },
   eventDescriptionText: {
     width: "100%",
-    fontSize: 18,
+    fontSize: 22,
   },
   hostBadgeWrapper: {
     backgroundColor: CustomDarkTheme.colors.notification,

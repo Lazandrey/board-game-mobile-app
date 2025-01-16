@@ -30,15 +30,6 @@ export const useGlobalContext = () => {
   return context;
 };
 export default function GlobalProvider({ children }: any) {
-  //   const [isLoggedIn, setIsLoggedIn] = useStorageState<boolean>(
-  //     false,
-  //     "isLoggedIn"
-  //   );
-  //   const [name, setName] = useStorageState<string>("");
-  //   const [email, setEmail] = useStorageState<string>("");
-  //   const [userId, setUserId] = useStorageState<string>("");
-  //   const [location, setLocation] = useStorageState<{ lat: number; lng: number } | null>(null, 'location');
-
   const [location, setLocation] = useState<Location.LocationObject>({
     coords: { latitude: 0, longitude: 0 },
   } as Location.LocationObject);
@@ -86,24 +77,24 @@ export default function GlobalProvider({ children }: any) {
         } else {
           setSearchDistanceKm(50);
         }
-        console.log(searchDistanceKm);
+
         const isLoggedInStorage = await AsyncStorage.getItem("isLoggedIn");
-        console.log(isLoggedInStorage);
+
         if (isLoggedInStorage === "true") {
           setIsLoggedIn(true);
         }
         const nameStorage = await AsyncStorage.getItem("userName");
-        console.log(nameStorage);
+
         if (nameStorage !== null) {
           setName(nameStorage);
         }
         const emailStorage = await AsyncStorage.getItem("email");
-        console.log(emailStorage);
+
         if (emailStorage !== null) {
           setEmail(emailStorage);
         }
         const userIdStorage = await AsyncStorage.getItem("userId");
-        console.log(userIdStorage);
+
         if (userIdStorage !== null) {
           setUserId(userIdStorage);
         }
@@ -116,6 +107,7 @@ export default function GlobalProvider({ children }: any) {
 
     getStoredData();
   }, []);
+  useEffect(() => {}, [location]);
 
   return (
     <GlobalContext.Provider

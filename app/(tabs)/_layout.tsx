@@ -42,7 +42,7 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name="(home)"
+        name="index"
         options={{
           title: "Home",
           tabBarIcon: ({ color }) => (
@@ -51,7 +51,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="(events)"
+        name="events"
         options={{
           title: "Events",
           ...(!GlobalContex.isLoggedIn && { href: null }),
@@ -70,7 +70,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="(profile)"
+        name="profile"
         options={{
           title: getFirsNmae(),
           tabBarIcon: ({ color }) => (

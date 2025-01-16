@@ -43,7 +43,7 @@ export const GetEvents = async ({
     if (dateTime) {
       startDate = new Date(dateTime).toISOString();
     }
-    console.log("host id", hostId);
+
     const response = await axios.get(
       `${hostAddress}/event?title=${gameTitle}&startDate=${startDate}&hostId=${hostId}&isCanceled=${isCanceled}&userLongitude=${userGeolocation?.longitude}&userLatitude=${userGeolocation?.latitude}&distance=${distance}`,
       {
@@ -160,16 +160,13 @@ export const SignIn = async (
 
     if (response.status === 200) {
       console.log("Login successful");
-      console.log("token", response.data.token);
+
       if (Platform.OS === "web") {
         await AsyncStorage.setItem("authToken", response.data.token);
       } else {
         await SecureStore.setItemAsync("authToken", response.data.token);
       }
     }
-    console.log(response.data.userName);
-    console.log(response.data.userId);
-    console.log(signInData.email);
 
     await AsyncStorage.setItem("userId", response.data.userId);
     await AsyncStorage.setItem("userName", response.data.userName);
@@ -364,6 +361,35 @@ export const registerToEvent = async (
         headers,
       }
     );
+    return response.status;
+  } catch (error) {
+    console.log(error);
+    const errorResponse = error as AxiosError;
+
+    return errorResponse.response?.status;
+  }
+};
+
+export const createEvent = async (
+  event: EventType
+): Promise<number | undefined> => {
+  try {
+    let token;
+    if (Platform.OS === "web") {
+      token = await AsyncStorage.getItem("authToken");
+    } else {
+      token = await SecureStore.getItemAsync("authToken");
+    }
+    if (!token) {
+      token = "";
+    }
+
+    const headers = {
+      authorization: token,
+    };
+    const response = await axios.post(`${hostAddress}/event`, event, {
+      headers,
+    });
     return response.status;
   } catch (error) {
     console.log(error);

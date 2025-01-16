@@ -76,7 +76,7 @@ const UpdateUserForm = () => {
     }
     console.log(res);
     setIsSubmitted(true);
-    router.push("/(tabs)/(profile)");
+    router.push("/(tabs)/profile");
   };
 
   useEffect(() => {

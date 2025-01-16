@@ -22,6 +22,7 @@ import GameSearchBar from "@/components/GameSearchBar";
 import { CustomDarkTheme } from "..//_layout";
 import Header from "@/components/Header";
 import { SortGameFileds, GameType } from "@/types/game.types";
+import { router } from "expo-router";
 
 const games = () => {
   const [refreshing, setRefreshing] = useState(false);
@@ -46,7 +47,6 @@ const games = () => {
 
   const Refresh = async () => {
     setRefreshing(true);
-    console.log("Refreshing data...");
 
     try {
       await refetch(); // Call the refetch function
@@ -61,12 +61,9 @@ const games = () => {
     if (data) {
       if (page < 3) {
         setShowsData([]);
-        console.log("empty data", data);
       }
       setShowsData((prevShowsData) => [...prevShowsData, ...data]);
     }
-    console.log(page);
-    console.log(showsData);
   }, [data]);
 
   const onRefresh = async () => {
@@ -92,7 +89,17 @@ const games = () => {
         contentContainerStyle={{ gap: 20 }}
         data={showsData}
         keyExtractor={(game) => game.id}
-        renderItem={({ item }) => <GameCard game={item} />}
+        renderItem={({ item }) => (
+          <GameCard
+            game={item}
+            onPress={() => {
+              router.push({
+                pathname: "/(games)/[id]",
+                params: { id: item.id },
+              });
+            }}
+          />
+        )}
         ListHeaderComponent={() => (
           <View style={styles.title}>
             <Header />
