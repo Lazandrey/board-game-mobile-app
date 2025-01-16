@@ -398,3 +398,36 @@ export const createEvent = async (
     return errorResponse.response?.status;
   }
 };
+
+export const updateEventById = async ({
+  id,
+  event,
+}: {
+  id: string;
+  event: EventType;
+}): Promise<number | undefined> => {
+  try {
+    let token;
+    if (Platform.OS === "web") {
+      token = await AsyncStorage.getItem("authToken");
+    } else {
+      token = await SecureStore.getItemAsync("authToken");
+    }
+    if (!token) {
+      token = "";
+    }
+
+    const headers = {
+      authorization: token,
+    };
+    const response = await axios.put(`${hostAddress}/event/${id}`, event, {
+      headers,
+    });
+    return response.status;
+  } catch (error) {
+    console.log(error);
+    const errorResponse = error as AxiosError;
+
+    return errorResponse.response?.status;
+  }
+};

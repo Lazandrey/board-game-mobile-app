@@ -35,7 +35,7 @@ const GameSearchBar: React.FC<GameSearchBarProps> = ({
   return (
     <View style={styles.searchSectionWrapper}>
       <View style={styles.searchBarWrapper}>
-        <Ionicons name="search" size={24} color={colors.text} />
+        <Ionicons name="search" size={26} color={colors.text} />
         <TextInput
           style={styles.searchInput}
           placeholder="Search"
@@ -77,7 +77,6 @@ const styles = StyleSheet.create({
     gap: 10,
     alignItems: "center",
     justifyContent: "flex-start",
-    paddingHorizontal: 10,
 
     paddingVertical: 20,
     paddingBottom: 0,
@@ -98,7 +97,7 @@ const styles = StyleSheet.create({
   searchInput: {
     color: CustomDarkTheme.colors.text,
 
-    fontSize: 16,
+    fontSize: 20,
   },
   fiterBtn: {
     backgroundColor: CustomDarkTheme.colors.card,
@@ -106,10 +105,12 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   sortingPicker: {
-    width: 120,
+    width: 140,
+    height: 60,
     backgroundColor: CustomDarkTheme.colors.card,
     color: CustomDarkTheme.colors.text,
     borderRadius: 4,
+    fontSize: 20,
   },
   selectedItem: {
     color: CustomDarkTheme.colors.primary,

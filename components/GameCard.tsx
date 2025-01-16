@@ -15,7 +15,6 @@ const GameCard = ({ game, onPress }: GameCardProps) => {
   return (
     <TouchableOpacity
       onPress={() => {
-        // console.log(`/games/${game.id}`);
         onPress();
       }}
     >
@@ -23,18 +22,26 @@ const GameCard = ({ game, onPress }: GameCardProps) => {
         <ThemedText style={styles.titleText}>{game.title}</ThemedText>
         <View style={styles.gamaDatawrapper}>
           <Image style={styles.gameImage} source={{ uri: game.gameImageUrl }} />
-          <View style={styles.gameGataTextWrapper}>
-            <ThemedText>Difficulty: {game.weight}</ThemedText>
-            <ThemedText>Rating: {game.rating}</ThemedText>
-            <ThemedText>Rated qty: {game.usersrated}</ThemedText>
-            <ThemedText>
+          <View style={styles.gameDataTextWrapper}>
+            <ThemedText style={styles.gameDataText}>
+              Difficulty: {game.weight.toFixed(2)}
+            </ThemedText>
+            <ThemedText style={styles.gameDataText}>
+              Rating: {game.rating.toFixed(2)}
+            </ThemedText>
+            <ThemedText style={styles.gameDataText}>
+              Rated qty: {game.usersrated}
+            </ThemedText>
+            <ThemedText style={styles.gameDataText}>
               Players: {game.minPlayers} - {game.maxPlayers}
             </ThemedText>
-            <ThemedText>
-              Time: {game.minPlayTime} - {game.maxPlayTime}
-            </ThemedText>
-            <ThemedText>Age: {game.age}</ThemedText>
           </View>
+        </View>
+        <View style={styles.bottomGameDataWrapper}>
+          <ThemedText style={styles.gameDataText}>
+            Time: {game.minPlayTime} - {game.maxPlayTime}
+          </ThemedText>
+          <ThemedText style={styles.gameDataText}>Age: {game.age}</ThemedText>
         </View>
       </View>
     </TouchableOpacity>
@@ -51,14 +58,15 @@ const styles = StyleSheet.create({
     gap: 10,
     paddingHorizontal: 10,
     paddingBottom: 10,
-    borderRadius: 4,
+    borderRadius: 10,
     overflow: "hidden",
   },
   titleText: {
-    height: 30,
+    // height: 30,
     width: "100%",
-    fontSize: 20,
+    fontSize: 25,
     textAlign: "center",
+    overflow: "hidden",
   },
   gameImage: {
     width: 200,
@@ -73,12 +81,21 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
-  gameGataTextWrapper: {
+  gameDataTextWrapper: {
     width: "100%",
     display: "flex",
     flexDirection: "column",
-
     alignItems: "flex-start",
     gap: 5,
+  },
+  bottomGameDataWrapper: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-end",
+    gap: 5,
+  },
+  gameDataText: {
+    fontSize: 20,
   },
 });

@@ -79,7 +79,7 @@ const EventDetails = (event: EventType) => {
         <TouchableOpacity
           onPress={() => {
             router.push({
-              pathname: "/games/[id]",
+              pathname: "/(games)/[id]",
               params: { id: event.game.id },
             });
           }}

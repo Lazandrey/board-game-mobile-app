@@ -129,6 +129,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     flex: 1,
+    paddingHorizontal: 10,
   },
   title: {
     display: "flex",

@@ -7,7 +7,7 @@ const HeaderImage = () => {
       <Image
         style={styles.logoImage}
         resizeMode="contain"
-        source={require("../assets/images/logoText.png")}
+        source={require("../assets/images/logo-transtapent.png")}
       />
     </View>
   );

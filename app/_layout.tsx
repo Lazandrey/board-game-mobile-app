@@ -20,12 +20,12 @@ SplashScreen.preventAutoHideAsync();
 export const CustomDarkTheme: Theme = {
   dark: true,
   colors: {
-    primary: "#3E4849",
-    background: "#373B3C",
-    card: "#687D78",
-    text: "white",
-    border: "#E5AF89",
-    notification: "#E3CEAF",
+    primary: "#CA4410",
+    background: "#588273",
+    card: "#503B33",
+    text: "#FFFFFF",
+    border: "#030F19",
+    notification: "#F2A44C",
   },
   fonts: DarkTheme.fonts,
 };

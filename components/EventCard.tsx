@@ -64,7 +64,13 @@ const EventCard = ({ card }: EventCardProps) => {
           </View>
 
           <View style={styles.gameTitleWrapper}>
-            <ThemedText style={styles.gameTitle}>{card.game.title}</ThemedText>
+            <ThemedText
+              style={styles.gameTitle}
+              numberOfLines={2}
+              ellipsizeMode="tail"
+            >
+              {card.game.title}
+            </ThemedText>
           </View>
         </View>
         <View style={styles.eventGameDescriptionWrapper}>
@@ -124,7 +130,7 @@ const styles = StyleSheet.create({
     gap: 20,
     paddingHorizontal: 10,
     paddingVertical: 10,
-    borderRadius: 4,
+    borderRadius: 10,
     overflow: "hidden",
   },
   eventGameWrapper: {
@@ -147,7 +153,7 @@ const styles = StyleSheet.create({
   },
   gameTitle: {
     overflow: "hidden",
-    fontSize: 40,
+    fontSize: 30,
     fontWeight: "bold",
     textAlign: "center",
   },
@@ -189,7 +195,7 @@ const styles = StyleSheet.create({
   },
   eventDescriptionText: {
     width: "100%",
-    fontSize: 22,
+    fontSize: 30,
   },
   hostBadgeWrapper: {
     backgroundColor: CustomDarkTheme.colors.notification,

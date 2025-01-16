@@ -57,7 +57,7 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
-        contentContainerStyle={{ gap: 20 }}
+        contentContainerStyle={{ gap: 30 }}
         data={data}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => <EventCard card={item} />}
@@ -76,5 +76,6 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     flex: 1,
+    paddingHorizontal: 10,
   },
 });
