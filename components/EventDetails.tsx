@@ -143,7 +143,9 @@ const EventDetails = (event: EventType) => {
           (userIndex !== -1 ? (
             <CustomButton title="Leave event" onPress={onLeave} />
           ) : (
-            <CustomButton title="Join event" onPress={onJoin} />
+            event.number_persons - event.accepted_persons_ids.length > 0 && (
+              <CustomButton title="Join event" onPress={onJoin} />
+            )
           ))}
         <ThemedText style={styles.evenText}>Players who joined:</ThemedText>
         <View style={styles.playerList}>

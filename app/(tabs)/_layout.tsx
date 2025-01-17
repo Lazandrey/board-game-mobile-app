@@ -27,6 +27,7 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
+        // tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
         tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
         headerShown: false,
         tabBarButton: HapticTab,
@@ -42,11 +43,11 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name="index"
+        name="(index)"
         options={{
           title: "Home",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="house.fill" color={color} />
+            <IconSymbol size={30} name="house.fill" color={color} />
           ),
         }}
       />
@@ -56,7 +57,7 @@ export default function TabLayout() {
           title: "Events",
           ...(!GlobalContex.isLoggedIn && { href: null }),
           tabBarIcon: ({ color }) => (
-            <MaterialIcons name="event-available" size={24} color={color} />
+            <MaterialIcons name="event-available" size={30} color={color} />
           ),
         }}
       />
@@ -65,7 +66,7 @@ export default function TabLayout() {
         options={{
           title: "Games",
           tabBarIcon: ({ color }) => (
-            <MaterialIcons name="videogame-asset" size={28} color={color} />
+            <MaterialIcons name="videogame-asset" size={30} color={color} />
           ),
         }}
       />
@@ -74,7 +75,7 @@ export default function TabLayout() {
         options={{
           title: getFirsNmae(),
           tabBarIcon: ({ color }) => (
-            <FontAwesome name="user" size={28} color={color} />
+            <FontAwesome name="user" size={30} color={color} />
           ),
         }}
       />

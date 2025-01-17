@@ -20,14 +20,7 @@ const GameDetails = (game: GameType) => {
   const richText = useRef(null);
   return (
     <View>
-      {/* <ReactNativeZoomableView */}
       <View style={styles.container}>
-        {/* maxZoom={3}
-        minZoom={0.8}
-        contentWidth={contentDimensions.width}
-        contentHeight={contentDimensions.height}
-        style={styles.container} */}
-        {/* > */}
         <ThemedText style={styles.titleText}>{game.title}</ThemedText>
         <Image source={{ uri: game.gameImageUrl }} style={styles.image} />
         <View style={styles.gameDataWrapper}>
@@ -46,7 +39,6 @@ const GameDetails = (game: GameType) => {
         </View>
         <HTMLView value={`<p>${game.description}</p>`} stylesheet={styles} />
       </View>
-      {/* </ReactNativeZoomableView> */}
     </View>
   );
 };

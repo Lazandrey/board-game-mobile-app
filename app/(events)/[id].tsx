@@ -46,7 +46,6 @@ const Event = () => {
           />
         )}
         {event.id && <EventDetails {...event} />}
-        {/* <CustomButton title="Return" onPress={() => router.push("/games")} /> */}
       </ScrollView>
     </View>
   );

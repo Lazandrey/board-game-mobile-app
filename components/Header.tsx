@@ -2,6 +2,8 @@ import { StyleSheet, Text, View, Image } from "react-native";
 import React from "react";
 import HeaderImage from "./HeaderImage";
 
+// import {boardGame} from "../assets/images/board-game.png"
+
 const Header = () => {
   return (
     <View style={styles.title}>
